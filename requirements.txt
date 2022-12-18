@@ -1,7 +1,0 @@
-numpy
-pandas
-matplotlib
-plotly
-torch
-black
-ccxt
