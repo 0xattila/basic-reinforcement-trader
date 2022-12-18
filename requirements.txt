@@ -3,5 +3,9 @@ pandas
 matplotlib
 plotly
 torch
+pymongo
 black
 ccxt
+python-dotenv
+ipython
+ipykernel
