@@ -2,7 +2,9 @@ numpy
 pandas
 matplotlib
 plotly
+scikit-learn
 torch
+torchinfo
 pymongo
 black
 ccxt
