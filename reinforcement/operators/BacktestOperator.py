@@ -2,6 +2,7 @@ import logging
 import time
 from datetime import timedelta
 
+from reinforcement import plot
 from reinforcement.operators import Operator
 
 logger = logging.getLogger(__name__)
@@ -21,4 +22,8 @@ class BacktestOperator(Operator):
             "Backtest rewards: %.4f, duration: %s",
             test_rewards.sum(),
             timedelta(seconds=time.perf_counter() - t0),
+        )
+
+        plot.plot_backtest(
+            test_rewards.numpy(), self.test_env.rewards.numpy(), self.klines.pairs
         )

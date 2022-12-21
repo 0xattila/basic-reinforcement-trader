@@ -24,3 +24,19 @@ def plot_train_epochs(train_rewards: ndarray, test_rewards: ndarray) -> None:
     plt.legend()
 
     plt.savefig("storage/train_epochs.jpg")
+
+
+def plot_backtest(rewards: ndarray, returns: ndarray, pairs: list[str]) -> None:
+    logger.info("Plot backtest results")
+
+    n_pairs = len(pairs)
+
+    fig, ax = plt.subplots(n_pairs, 1, figsize=(12.8, 7.2 * n_pairs), dpi=200)
+
+    for i in range(n_pairs):
+        ax[i].plot(returns[:, i].cumsum(), label="cummulative returns")
+        ax[i].plot(rewards[1:, i].cumsum(), label="cummulative rewards")
+        ax[i].set_title("%s results" % pairs[i])
+        ax[i].legend()
+
+    fig.savefig("storage/backtest.jpg")

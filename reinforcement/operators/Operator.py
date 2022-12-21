@@ -19,23 +19,23 @@ class Operator(ABC):
     def __init__(self, timeframe: Timeframe) -> None:
         seq_len = 10
 
-        klines = KlineManager.from_database(timeframe)
-        klines.add_indicator(
+        self.klines = KlineManager.from_database(timeframe)
+        self.klines.add_indicator(
             lambda x: x["close"].pct_change(), name="return", dropna=True
         )
 
-        data = klines.get_column("return").to_numpy()
+        data = self.klines.get_column("return").to_numpy()
         x_train, x_test, y_train, y_test = self.__build_datasets(data, seq_len)
 
         self.train_env = Environment(
             states=torch.from_numpy(x_train),
             rewards=torch.from_numpy(y_train),
-            btc_index=klines.btc_index,
+            btc_index=self.klines.btc_index,
         )
         self.test_env = Environment(
             states=torch.from_numpy(x_test),
             rewards=torch.from_numpy(y_test),
-            btc_index=klines.btc_index,
+            btc_index=self.klines.btc_index,
         )
 
         self.agent = Agent(self.train_env.n_pairs, seq_len, self.train_env.n_actions)
