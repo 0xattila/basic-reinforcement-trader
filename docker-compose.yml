@@ -1,0 +1,82 @@
+version: '3.9'
+
+services:
+  db:
+    image: mongo:latest
+    hostname: brtdb
+    deploy:
+      resources:
+        limits:
+          cpus: '3.0'
+          memory: 300M
+    networks:
+      - net0
+
+  download:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    env_file:
+      - .env
+    networks:
+      - net0
+    depends_on:
+      - db
+    entrypoint:
+      - python
+      - -um
+      - data
+      - download
+      - --since
+      - 2022-11-20T00:00:00
+      - --timeframe
+      - 5m
+
+  train:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    env_file:
+      - .env
+    networks:
+      - net0
+    volumes:
+      - storage:/brt/storage
+    depends_on:
+      - db
+    entrypoint:
+      - python
+      - -um
+      - reinforcement
+      - train
+      - --timeframe
+      - 5m
+      - -e
+      - "20"
+
+  backtest:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    env_file:
+      - .env
+    networks:
+      - net0
+    volumes:
+      - storage:/brt/storage
+    depends_on:
+      - db
+    entrypoint:
+      - python
+      - -um
+      - reinforcement
+      - backtest
+      - --timeframe
+      - 5m
+
+networks:
+  net0:
+
+
+volumes:
+  storage:
