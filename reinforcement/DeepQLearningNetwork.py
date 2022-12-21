@@ -1,52 +1,35 @@
 import logging
 
+import numpy as np
+
 import torch
-import torch.nn.functional as F
 from torch import FloatTensor
-from torch.nn import Conv1d, Linear, Tanh, Sequential, Module
+from torch.nn import Linear, Tanh, Sequential, Module
 
 
 logger = logging.getLogger(__name__)
 
 
 class DeepQLearningNetwork(Module):
+    """Neural net for reinforcement learning."""
+
     FILEPATH = "storage/dqn.pt"
 
-    def __init__(self, n_pair: int, n_output: int, n_cnn: int, cnn_delta: int) -> None:
+    def __init__(self, n_inputs: int, n_outputs: int, n_layers: int) -> None:
         super().__init__()
 
-        cnn = []
+        dims = np.linspace(n_inputs, n_outputs, n_layers + 1).astype(np.int64)
 
-        in_ch = n_pair
-        out_ch = in_ch + cnn_delta
-        stride = 2
+        fc = []
 
-        for i in range(n_cnn):
-            cnn.append(Conv1d(in_ch, out_ch, kernel_size=3, stride=stride))
-            cnn.append(Tanh())
+        for i in range(n_layers):
+            fc.append(Linear(dims[i], dims[i + 1]))
+            fc.append(Tanh())
 
-            if i + 1 >= n_cnn:
-                continue
-
-            in_ch = out_ch
-            out_ch += cnn_delta
-
-        self.cnn = Sequential(*cnn)
-
-        latest_cnn_weights = cnn[-2].weight.data
-        fc_in = latest_cnn_weights.shape[0] * (latest_cnn_weights.shape[2] // stride)
-
-        self.fc = Sequential(
-            Linear(fc_in, 16),
-            Tanh(),
-            Linear(16, n_output),
-        )
+        self.fc = Sequential(*fc)
 
     def forward(self, x: FloatTensor) -> FloatTensor:
-        x = self.cnn(x)
-
         x = x.flatten(-2)  # type: ignore
-        x = F.dropout(x, 0.05)  # type: ignore
         x = self.fc(x)
 
         return x
