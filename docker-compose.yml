@@ -13,6 +13,7 @@ services:
       - net0
 
   download:
+    image: brt
     build:
       dockerfile: Dockerfile
       context: .
@@ -33,6 +34,7 @@ services:
       - 5m
 
   train:
+    image: brt
     build:
       dockerfile: Dockerfile
       context: .
@@ -55,6 +57,7 @@ services:
       - "20"
 
   backtest:
+    image: brt
     build:
       dockerfile: Dockerfile
       context: .
