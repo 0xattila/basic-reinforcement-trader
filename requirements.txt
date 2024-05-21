@@ -12,3 +12,4 @@ ccxt
 python-dotenv
 ipython
 ipykernel
+requests>=2.32.0 # not directly required, pinned by Snyk to avoid a vulnerability
