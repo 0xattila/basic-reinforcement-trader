@@ -12,3 +12,5 @@ ccxt
 python-dotenv
 ipython
 ipykernel
+aiohttp>=3.10.11 # not directly required, pinned by Snyk to avoid a vulnerability
+tornado>=6.4.2 # not directly required, pinned by Snyk to avoid a vulnerability
