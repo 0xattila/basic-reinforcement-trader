@@ -12,3 +12,4 @@ ccxt
 python-dotenv
 ipython
 ipykernel
+pycares>=4.9.0 # not directly required, pinned by Snyk to avoid a vulnerability
